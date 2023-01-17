@@ -97,10 +97,32 @@ body{
     border: 1px solid #383838;
 }
 
+[block-type="i"] {
+    background-color: chocolate;
+}
+[block-type="j"] {
+    background-color: darkblue;
+}
+[block-type="l"] {
+    background-color: darkgreen;
+}
+[block-type="o"] {
+    background-color: darkred;
+}
+[block-type="s"] {
+    background-color: midnightblue;
+}
+[block-type="t"] {
+    background-color: peru;
+}
+[block-type="z"] {
+    background-color: rgb(72, 0, 140);
+}
+
 .grid-game{
     display: grid;
-    grid-template-columns: repeat(10, 25px);
-    grid-template-rows: repeat(20, 25px);
+    grid-template-columns: repeat(10, 20px);
+    grid-template-rows: repeat(20, 20px);
     align-content: center;
     justify-content: center;
 }
