@@ -1,5 +1,6 @@
-const collumnsQtt = 10;
+const columnsQtt = 10;
 const rowQtt = 20;
+const bodyElement = document.getElementsByTagName("body")[0]
 let actualLevel
 let actualVelocity
 
@@ -8,9 +9,9 @@ function loadGameGrid() {
     let listBlocks = ''
 
     for (let i = 1; i <= rowQtt; i++) {
-        for (let j = 1; j <= collumnsQtt; j++) {
+        for (let j = 1; j <= columnsQtt; j++) {
             listBlocks += `
-            <div id="grid-${i}-${j}" class="block-space"></div>`
+            <div id="grid-${i}-${j}" class="block-space" block-type="none"></div>`
         }
     }
     gridConteiner.innerHTML = listBlocks
@@ -105,7 +106,7 @@ const rotateBlock = a => a
 
 const stopFallBlock = function () {
     for (let i = rowQtt; i >= 1; i--) {
-        for (let j = collumnsQtt; j >= 1; j--) {
+        for (let j = columnsQtt; j >= 1; j--) {
             let element = document.getElementById(`grid-${i}-${j}`)
             if (element.classList.contains("moving")) {
                 element.classList.remove("moving")
@@ -115,8 +116,8 @@ const stopFallBlock = function () {
     }
 }
 
-const verifyBlockTouch = function (x, y) {
-    if (x == 20) {
+const verifyBlockTouchDown = function (x, y) {
+    if (x === 20) {
         return true
     }
 
@@ -135,17 +136,62 @@ const verifyBlockTouch = function (x, y) {
     return false
 }
 
+const verifyBlockTouchOnLeft = function (x, y) {
+    if (y === 1) {
+        return true
+    }
+
+    for (let c = y; c <= columnsQtt; c++) {
+        for (let r = x; r <= rowQtt; r++) {
+            let element = document.getElementById(`grid-${r}-${c}`)
+            let isMoving = element.classList.contains("moving")
+            let leftColumnBlock = document.getElementById(`grid-${r}-${c - 1}`)
+            let leftColumnHasABlock = leftColumnBlock.classList.contains("stopped")
+            if (leftColumnHasABlock & isMoving) {
+                return true
+            }
+        }
+    }
+
+    return false
+}
+
+const verifyBlockTouchOnRight = function (x, y) {
+    if (y === 10) {
+        return true
+    }
+
+    for (let c = y; c >= 1; c--) {
+        for (let r = x; r >= 1; r--) {
+            let element = document.getElementById(`grid-${r}-${c}`)
+            let isMoving = element.classList.contains("moving")
+            let leftColumnBlock = document.getElementById(`grid-${r}-${c + 1}`)
+            let leftColumnHasABlock = leftColumnBlock.classList.contains("stopped")
+            if (leftColumnHasABlock & isMoving) {
+                return true
+            }
+        }
+    }
+
+    return false
+}
+
 const fallBlock = function () {
 
     setInterval(function () {
         for (let i = rowQtt; i >= 1; i--) {
-            for (let j = collumnsQtt; j >= 1; j--) {
+            for (let j = columnsQtt; j >= 1; j--) {
+
                 let element = document.getElementById(`grid-${i}-${j}`)
                 let actualBlockTypeValue = element.getAttribute("block-type")
                 let isMoving = element.classList.contains("moving")
-                let hasAObstacle = verifyBlockTouch(i, j)
 
-                if (isMoving & hasAObstacle) {
+                let hasAObstacle = false
+                if(isMoving){
+                    hasAObstacle = verifyBlockTouchDown(i, j)
+                }
+                
+                if (hasAObstacle) {
                     stopFallBlock()
                     renderBlock()
                     //calcLines()
@@ -159,15 +205,82 @@ const fallBlock = function () {
                 }
             }
         }
-    }, 300 - actualVelocity)
+    }, 1000 - actualVelocity)
 }
-setLevel(1)
-fallBlock()
 
-const moveRightBlock = a => a
-const moveLeftBlock = a => a
+const moveLeftBlock = function () {
+    for (let c = 1; c <= columnsQtt; c++) {
+        for (let r = 1; r <= rowQtt; r++) {
+
+            let element = document.getElementById(`grid-${r}-${c}`)
+            let actualBlockTypeValue = element.getAttribute("block-type")
+            let isMoving = element.classList.contains("moving")
+
+            let hasAObstacle = false
+            if(isMoving){
+                hasAObstacle = verifyBlockTouchOnLeft(r, c)
+            }
+
+            if(hasAObstacle){
+                return false
+            }
+
+            if (isMoving & !hasAObstacle) {
+                let leftColumnBlock = document.getElementById(`grid-${r}-${c - 1}`)
+                leftColumnBlock.setAttribute("block-type", `${actualBlockTypeValue}`)
+                leftColumnBlock.classList.add("moving")
+                element.removeAttribute("block-type")
+                element.classList.remove("moving")
+            }
+        }
+    }
+}
+const moveRightBlock = function () {
+    for (let c = columnsQtt; c >= 1; c--) {
+        for (let r = rowQtt; r >= 1; r--) {
+
+            let element = document.getElementById(`grid-${r}-${c}`)
+            let actualBlockTypeValue = element.getAttribute("block-type")
+            let isMoving = element.classList.contains("moving")
+
+            let hasAObstacle = false
+            if(isMoving){
+                hasAObstacle = verifyBlockTouchOnRight(r, c)
+            }
+
+            if(hasAObstacle){
+                return false
+            }
+
+            if (isMoving & !hasAObstacle) {
+                let rightColumnBlock = document.getElementById(`grid-${r}-${c + 1}`)
+                rightColumnBlock.setAttribute("block-type", `${actualBlockTypeValue}`)
+                rightColumnBlock.classList.add("moving")
+                element.removeAttribute("block-type")
+                element.classList.remove("moving")
+            }
+        }
+    }
+}
 const moveDownFastBlock = a => a
 const endMoviment = a => a
 const calcLines = a => a
 const removeLines = a => a
 const newBlock = a => a
+
+setLevel(4)
+fallBlock()
+
+
+document.onkeydown = keyboard
+function keyboard(event) {
+    const keyname = event.key
+    console.log(keyname)
+
+    if (keyname === "ArrowLeft"){
+        moveLeftBlock()
+    }
+    if (keyname === "ArrowRight"){
+        moveRightBlock("1")
+    }
+}

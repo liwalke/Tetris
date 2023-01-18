@@ -110,10 +110,10 @@ body{
     background-color: darkred;
 }
 [block-type="s"] {
-    background-color: midnightblue;
+    background-color: sienna;
 }
 [block-type="t"] {
-    background-color: peru;
+    background-color: darkgrey;
 }
 [block-type="z"] {
     background-color: rgb(72, 0, 140);
