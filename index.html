@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./Assets/css/style.css">
     <title>Tetris</title>
-    <script src="./Assets/js/index.js"></script>
+    <script  type="module" src="./index.js" defer></script>
 </head>
-<body onload="loadGameGrid()">
+<body onload="loadGame()">
     <header class="heading">
         <H1 class="title">Tetris</H1>
     </header>
@@ -31,7 +31,7 @@
                 <h4>Speed Level</h4>
             </div>
             <div class="grid-item commands">
-                <h4>Buttons</h4>
+                <button onclick="startGame()" class="btn">Start</button>
             </div>
         </section>
     </main>

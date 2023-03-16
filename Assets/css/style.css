@@ -41,8 +41,13 @@ body{
 .speed-level{
     grid-area: speed-level;
 }
+
 .commands{
     grid-area: commands;
+}
+.commands .btn{
+    color: black;
+    padding: 10px;
 }
 
 .grid-conteiner {
